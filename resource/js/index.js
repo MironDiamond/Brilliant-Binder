@@ -274,8 +274,14 @@ const vue_app = Vue.createApp({
       window.electronAPI.Hide();
     },
     
-    Dialog(event, name) {
+    Dialog(event, name, form=null) {
       let form_data = getFormData(event);
+
+      if (form === null) {
+        form_data = getFormData(event)
+      } else {
+        form_data = form
+      }
 
       if (name == 'create_profile') {
         if (form_data['name'].length > 0) {
@@ -470,7 +476,7 @@ const vue_app = Vue.createApp({
       props: ['title', 'inputs', 'text', 'buttons', 'name', 'profile_list'],
 
       template: `
-        <form class="window" @submit.prevent="$root.Dialog($event, name)" v-if="$root.popup == name">
+        <form ref="form" class="window" @submit.prevent="$root.Dialog($event, name)" v-if="$root.popup == name">
           <div class="title">
             {{ title }}
 
@@ -484,7 +490,7 @@ const vue_app = Vue.createApp({
           </div>
 
           <div class="inputs" v-if="inputs">
-            <input v-for="item, key in inputs" :placeholder="item['placeholder']" :maxlength="item['maxlength']" :name="item['name']" :type="item['type']" class="input">
+            <input @keydown.enter.prevent="Submit" v-for="item, key in inputs" :placeholder="item['placeholder']" :maxlength="item['maxlength']" :name="item['name']" :type="item['type']" class="input">
           </div>
 
           <div class="profile_list" v-if="profile_list">
@@ -516,7 +522,7 @@ const vue_app = Vue.createApp({
           </div>
 
           <div class="buttons" v-if="buttons.length > 1">
-            <button type="submit">{{ buttons[0] }}</button>
+            <button ref="button" type="submit">{{ buttons[0] }}</button>
             <button @click.prevent="Close">{{ buttons[1] }}</button>
           </div>
 
@@ -529,6 +535,10 @@ const vue_app = Vue.createApp({
       methods: {
         Close() {
           this.$root.popup = "";
+        },
+
+        Submit() {
+          this.$refs.button.click();
         },
 
         deleteProfile(id) {

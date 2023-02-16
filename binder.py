@@ -5,15 +5,22 @@ import eel
 import pyperclip
 import keyboard
 import atexit
+import socket
 import json
 import requests
 import random
-import os
+import sys
 import threading
-from win10toast import ToastNotifier
 
+from win10toast import ToastNotifier
 from time import sleep
 
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+result = sock.connect_ex(('localhost', 8888))
+
+if result == 0:
+	sys.exit()
+    
 toaster = ToastNotifier()
 
 eel.init("resource")
