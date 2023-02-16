@@ -1,0 +1,1458 @@
+@import "reset.css";
+* {
+  color: #fff;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  font-family: "Inter", sans-serif;
+}
+* ::-webkit-scrollbar {
+  width: 0px;
+  background-color: rgba(0, 0, 0, 0);
+}
+*[v-cloak] {
+  display: none;
+}
+
+body {
+  background-color: #151521;
+}
+
+#popup {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.5647058824);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+#popup:not(.active) {
+  opacity: 0;
+  pointer-events: none;
+}
+#popup .window {
+  border-radius: 4px;
+  padding: 32px 32px;
+  position: absolute;
+  background-color: #151521;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 32px;
+  min-width: 40%;
+  max-width: 50%;
+}
+#popup .window .title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  font-weight: 600;
+  font-size: 32px;
+  color: #01A1FE;
+  gap: 64px;
+}
+#popup .window .title .delete {
+  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+  background-color: rgba(39, 39, 58, 0.3137254902);
+}
+#popup .window .title .delete svg path {
+  fill: rgba(1, 161, 254, 0.3137254902);
+}
+#popup .window .title svg {
+  -webkit-transition: all 0.1s linear;
+  transition: all 0.1s linear;
+}
+#popup .window .title:active svg {
+  -webkit-transform: scale(90%);
+          transform: scale(90%);
+}
+#popup .window .text {
+  line-height: 160%;
+  font-size: 18px;
+}
+#popup .window .profile_list {
+  width: 100%;
+  height: 320px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 16px;
+}
+#popup .window .profile_list .profile {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  border-radius: 4px;
+  width: 100%;
+  height: 40px;
+  display: flex;
+  gap: 16px;
+}
+#popup .window .profile_list .profile .name {
+  cursor: pointer;
+  padding: 0 16px;
+  background-color: #27273A;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  height: 40px;
+  border-radius: 4px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-transition: all 0.18s ease-in-out;
+  transition: all 0.18s ease-in-out;
+}
+#popup .window .profile_list .profile .name:hover {
+  opacity: 0.8;
+}
+#popup .window .profile_list .profile .name:active {
+  opacity: 0.6;
+}
+#popup .window .profile_list .profile .delete {
+  background-color: #27273A;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  cursor: pointer;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+#popup .window .profile_list .profile .delete:active {
+  opacity: 0.6;
+}
+#popup .window .profile_list .profile svg {
+  width: 22px;
+  height: 22px;
+}
+#popup .window .profile_list .profile svg path {
+  fill: #ff2222;
+}
+#popup .window .inputs {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 16px;
+}
+#popup .window .inputs .input {
+  font-size: 18px;
+  width: 100%;
+  padding: 0 16px;
+  height: 48px;
+  text-align: left;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.3137254902);
+}
+#popup .window .buttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 16px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+#popup .window .buttons button {
+  font-size: 18px;
+  width: 50%;
+  border-radius: 4px;
+  height: 48px;
+}
+#popup .window .buttons button:nth-child(1) {
+  background-color: #0186D4;
+}
+#popup .window .buttons button:nth-child(1):active {
+  background-color: #016BA9;
+}
+#popup .window .buttons button:nth-child(2) {
+  background-color: #27273A;
+}
+#popup .window .buttons button:nth-child(2):active {
+  opacity: 0.8;
+}
+#popup .window .buttons.single button {
+  width: 100%;
+  background-color: #27273A;
+}
+#popup .window .buttons.single button:active {
+  opacity: 0.8;
+  background-color: #27273A;
+}
+
+header {
+  padding-right: 32px;
+  width: 100%;
+  height: 32px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #151521;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: end;
+  font-size: 12px;
+  color: #01A1FE;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1px;
+  gap: 8px;
+  z-index: 50;
+}
+header .button {
+  border-radius: 4px;
+  width: 16px;
+  height: 16px;
+  background-color: rgba(1, 161, 254, 0.5647058824);
+  cursor: pointer;
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+header .button svg {
+  width: 14px;
+}
+header .button svg path {
+  fill: #fff;
+}
+header .button .line {
+  position: absolute;
+  display: block;
+  width: 50%;
+  bottom: 4px;
+  height: 1px;
+  background-color: #fff;
+}
+header .button:active {
+  opacity: 0.5;
+}
+
+main {
+  width: 100%;
+  height: 100%;
+  background-color: #151521;
+  padding: 32px 0;
+  padding-bottom: 16px;
+  background-image: var(--test);
+  background-color: rgba(21, 21, 33, 0.9);
+  background-blend-mode: multiply;
+  background-size: cover;
+  background-position: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-transition: background 0s linear;
+  transition: background 0s linear;
+  position: relative;
+}
+main.blackout0 {
+  background-color: rgba(21, 21, 33, 0);
+}
+main.blackout1 {
+  background-color: rgba(21, 21, 33, 0.25);
+}
+main.blackout2 {
+  background-color: rgba(21, 21, 33, 0.5);
+}
+main.blackout3 {
+  background-color: rgba(21, 21, 33, 0.75);
+}
+main.blackout4 {
+  background-color: rgba(21, 21, 33, 0.9);
+}
+main .loading {
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  position: absolute;
+  left: 0;
+  background-color: #151521;
+  top: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+main .loading:not(.active) {
+  opacity: 0;
+  pointer-events: none;
+}
+main .loading .loader {
+  -webkit-transform: rotateZ(45deg);
+          transform: rotateZ(45deg);
+  -webkit-perspective: 1000px;
+          perspective: 1000px;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  color: #fff;
+  opacity: 0;
+  -webkit-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+main .loading .loader.active {
+  opacity: 1;
+}
+main .loading .loader:before, main .loading .loader:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: inherit;
+  height: inherit;
+  border-radius: 50%;
+  -webkit-transform: rotateX(70deg);
+          transform: rotateX(70deg);
+  -webkit-animation: 1s spin linear infinite;
+          animation: 1s spin linear infinite;
+}
+main .loading .loader:after {
+  color: #01A1FE;
+  -webkit-transform: rotateY(70deg);
+          transform: rotateY(70deg);
+  -webkit-animation-delay: 0.4s;
+          animation-delay: 0.4s;
+}
+@-webkit-keyframes rotate {
+  0% {
+    -webkit-transform: translate(-50%, -50%) rotateZ(0deg);
+            transform: translate(-50%, -50%) rotateZ(0deg);
+  }
+  100% {
+    -webkit-transform: translate(-50%, -50%) rotateZ(360deg);
+            transform: translate(-50%, -50%) rotateZ(360deg);
+  }
+}
+@keyframes rotate {
+  0% {
+    -webkit-transform: translate(-50%, -50%) rotateZ(0deg);
+            transform: translate(-50%, -50%) rotateZ(0deg);
+  }
+  100% {
+    -webkit-transform: translate(-50%, -50%) rotateZ(360deg);
+            transform: translate(-50%, -50%) rotateZ(360deg);
+  }
+}
+@-webkit-keyframes rotateccw {
+  0% {
+    -webkit-transform: translate(-50%, -50%) rotate(0deg);
+            transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    -webkit-transform: translate(-50%, -50%) rotate(-360deg);
+            transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+@keyframes rotateccw {
+  0% {
+    -webkit-transform: translate(-50%, -50%) rotate(0deg);
+            transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    -webkit-transform: translate(-50%, -50%) rotate(-360deg);
+            transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+@-webkit-keyframes spin {
+  0%, 100% {
+    -webkit-box-shadow: 0.2em 0px 0 0px currentcolor;
+            box-shadow: 0.2em 0px 0 0px currentcolor;
+  }
+  12% {
+    -webkit-box-shadow: 0.2em 0.2em 0 0 currentcolor;
+            box-shadow: 0.2em 0.2em 0 0 currentcolor;
+  }
+  25% {
+    -webkit-box-shadow: 0 0.2em 0 0px currentcolor;
+            box-shadow: 0 0.2em 0 0px currentcolor;
+  }
+  37% {
+    -webkit-box-shadow: -0.2em 0.2em 0 0 currentcolor;
+            box-shadow: -0.2em 0.2em 0 0 currentcolor;
+  }
+  50% {
+    -webkit-box-shadow: -0.2em 0 0 0 currentcolor;
+            box-shadow: -0.2em 0 0 0 currentcolor;
+  }
+  62% {
+    -webkit-box-shadow: -0.2em -0.2em 0 0 currentcolor;
+            box-shadow: -0.2em -0.2em 0 0 currentcolor;
+  }
+  75% {
+    -webkit-box-shadow: 0px -0.2em 0 0 currentcolor;
+            box-shadow: 0px -0.2em 0 0 currentcolor;
+  }
+  87% {
+    -webkit-box-shadow: 0.2em -0.2em 0 0 currentcolor;
+            box-shadow: 0.2em -0.2em 0 0 currentcolor;
+  }
+}
+@keyframes spin {
+  0%, 100% {
+    -webkit-box-shadow: 0.2em 0px 0 0px currentcolor;
+            box-shadow: 0.2em 0px 0 0px currentcolor;
+  }
+  12% {
+    -webkit-box-shadow: 0.2em 0.2em 0 0 currentcolor;
+            box-shadow: 0.2em 0.2em 0 0 currentcolor;
+  }
+  25% {
+    -webkit-box-shadow: 0 0.2em 0 0px currentcolor;
+            box-shadow: 0 0.2em 0 0px currentcolor;
+  }
+  37% {
+    -webkit-box-shadow: -0.2em 0.2em 0 0 currentcolor;
+            box-shadow: -0.2em 0.2em 0 0 currentcolor;
+  }
+  50% {
+    -webkit-box-shadow: -0.2em 0 0 0 currentcolor;
+            box-shadow: -0.2em 0 0 0 currentcolor;
+  }
+  62% {
+    -webkit-box-shadow: -0.2em -0.2em 0 0 currentcolor;
+            box-shadow: -0.2em -0.2em 0 0 currentcolor;
+  }
+  75% {
+    -webkit-box-shadow: 0px -0.2em 0 0 currentcolor;
+            box-shadow: 0px -0.2em 0 0 currentcolor;
+  }
+  87% {
+    -webkit-box-shadow: 0.2em -0.2em 0 0 currentcolor;
+            box-shadow: 0.2em -0.2em 0 0 currentcolor;
+  }
+}
+main .navigation {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  height: 80px;
+  opacity: 0.9;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+main .navigation .nav {
+  cursor: pointer;
+  width: 50%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  height: 100%;
+  font-family: "Oswald", sans-serif;
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  color: #222236;
+  border-bottom: 1px solid #222236;
+}
+main .navigation .nav.active {
+  color: #01A1FE;
+  border-bottom: 1px solid #01A1FE;
+}
+main .window_wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+main .main_window {
+  width: 100%;
+  height: 100%;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  position: absolute;
+  left: 0;
+  top: 0px;
+}
+main .main_window:not(.active) {
+  opacity: 0;
+  pointer-events: none;
+}
+main .main_window .binds_settings {
+  width: 100%;
+  padding: 24px 32px;
+  padding-bottom: 16px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+main .main_window .binds_settings .left {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+main .main_window .binds_settings .left, main .main_window .binds_settings .right {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  height: 48px;
+  gap: 12px;
+  opacity: 0.9;
+}
+main .main_window .binds_settings .left .search, main .main_window .binds_settings .right .search {
+  margin-right: 80px;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #27273A;
+  font-size: 24px;
+  padding: 0 16px;
+  color: #fff;
+  background-color: rgba(39, 39, 58, 0.3764705882);
+  border-radius: 4px;
+}
+main .main_window .binds_settings .left .search::-webkit-input-placeholder, main .main_window .binds_settings .right .search::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.3137254902);
+}
+main .main_window .binds_settings .left .search::-moz-placeholder, main .main_window .binds_settings .right .search::-moz-placeholder {
+  color: rgba(255, 255, 255, 0.3137254902);
+}
+main .main_window .binds_settings .left .search:-ms-input-placeholder, main .main_window .binds_settings .right .search:-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.3137254902);
+}
+main .main_window .binds_settings .left .search::-ms-input-placeholder, main .main_window .binds_settings .right .search::-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.3137254902);
+}
+main .main_window .binds_settings .left .search::placeholder, main .main_window .binds_settings .right .search::placeholder {
+  color: rgba(255, 255, 255, 0.3137254902);
+}
+main .main_window .binds_settings .left .search:focus, main .main_window .binds_settings .right .search:focus {
+  border-color: rgba(1, 161, 254, 0.5647058824);
+}
+main .main_window .binds_settings .left .profile, main .main_window .binds_settings .right .profile {
+  width: 320px;
+  height: 100%;
+  background-color: #27273A;
+  border: 2px solid #27273A;
+  border-radius: 4px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+  padding: 16px;
+  font-size: 20px;
+  color: #fff;
+  position: relative;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+main .main_window .binds_settings .left .profile svg, main .main_window .binds_settings .right .profile svg {
+  right: 8px;
+  position: absolute;
+  width: 24px;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+main .main_window .binds_settings .left .profile svg rect, main .main_window .binds_settings .right .profile svg rect {
+  display: none;
+}
+main .main_window .binds_settings .left .profile svg path, main .main_window .binds_settings .right .profile svg path {
+  fill: #01A1FE;
+}
+main .main_window .binds_settings .left .profile:active svg, main .main_window .binds_settings .right .profile:active svg {
+  -webkit-transform: translateY(1px);
+          transform: translateY(1px);
+}
+main .main_window .binds_settings .left .square_button, main .main_window .binds_settings .right .square_button {
+  border-radius: 4px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 48px;
+  color: #27273A;
+  font-size: 48px;
+  border: 2px solid #27273A;
+  height: 100%;
+  background-color: #27273A;
+}
+main .main_window .binds_settings .left .square_button:hover, main .main_window .binds_settings .right .square_button:hover {
+  opacity: 0.9;
+}
+main .main_window .binds_settings .left .square_button:active, main .main_window .binds_settings .right .square_button:active {
+  opacity: 0.7;
+}
+main .main_window .binds_settings .left .square_button svg, main .main_window .binds_settings .right .square_button svg {
+  zoom: 1;
+}
+main .main_window .binds_settings .left .square_button svg, main .main_window .binds_settings .right .square_button svg {
+  width: 32px;
+}
+main .main_window .binds_settings .left .square_button svg path, main .main_window .binds_settings .right .square_button svg path {
+  fill: #01A1FE;
+}
+main .main_window .binds {
+  width: 100%;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  padding: 0 32px;
+  overflow: auto;
+  gap: 16px;
+  padding-bottom: 16px;
+}
+main .main_window .binds .item {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+  border-radius: 4px;
+  opacity: 0.9;
+  width: 100%;
+  height: 64px;
+  background-color: #27273A;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  padding: 0 24px;
+}
+main .main_window .binds .item.no_active {
+  opacity: 0.5;
+}
+main .main_window .binds .item.empty {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.5019607843);
+  opacity: 1;
+  gap: 8px;
+  height: 100%;
+  border-radius: 4px;
+  background-color: rgba(39, 39, 58, 0.3137254902);
+}
+main .main_window .binds .item.empty .icon {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 200px;
+  height: 200px;
+  position: relative;
+  top: 64px;
+  opacity: 0.5;
+  background-color: transparent;
+}
+main .main_window .binds .item.empty .icon ul, main .main_window .binds .item.empty .icon li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+main .main_window .binds .item.empty .icon .diamond {
+  display: block;
+  width: 200px;
+  height: 200px;
+  position: relative;
+}
+main .main_window .binds .item.empty .icon .diamond li {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  -webkit-transition: 400ms ease;
+  transition: 400ms ease;
+}
+main .main_window .binds .item.empty .icon .diamond li:nth-child(1) {
+  border-width: 20px 20px 0 20px;
+  border-color: rgba(0, 0, 0, 0.5647058824) transparent transparent transparent;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 0;
+}
+main .main_window .binds .item.empty .icon .diamond li:nth-child(1).animated {
+  -webkit-animation: opacity 1s 0.2s ease-in-out 1;
+          animation: opacity 1s 0.2s ease-in-out 1;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+}
+main .main_window .binds .item.empty .icon .diamond li:nth-child(2) {
+  border-width: 0 20px 20px 20px;
+  border-color: transparent transparent rgba(0, 0, 0, 0.5647058824);
+  left: 59px;
+  top: 1px;
+}
+main .main_window .binds .item.empty .icon .diamond li:nth-child(2).animated {
+  -webkit-animation: opacity 1s 0.2s ease-in-out 1;
+          animation: opacity 1s 0.2s ease-in-out 1;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+}
+main .main_window .binds .item.empty .icon .diamond li:nth-child(3) {
+  border-width: 0 20px 20px 20px;
+  border-color: transparent transparent rgba(0, 0, 0, 0.5647058824);
+  right: 59px;
+  top: 1px;
+}
+main .main_window .binds .item.empty .icon .diamond li:nth-child(3).animated {
+  -webkit-animation: opacity 1s 0.2s ease-in-out 1;
+          animation: opacity 1s 0.2s ease-in-out 1;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+}
+main .main_window .binds .item.empty .icon .diamond li:nth-child(4) {
+  border-width: 0 20px 20px 20px;
+  border-width: 20px 20px 0 20px;
+  border-color: rgba(0, 0, 0, 0.5647058824) transparent transparent transparent;
+  right: 59px;
+  top: 22px;
+}
+main .main_window .binds .item.empty .icon .diamond li:nth-child(4).animated {
+  -webkit-animation: opacity 1s 0.4s ease-in-out 1;
+          animation: opacity 1s 0.4s ease-in-out 1;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+}
+main .main_window .binds .item.empty .icon .diamond li:nth-child(5) {
+  border-width: 0 20px 20px 20px;
+  border-width: 20px 20px 0 20px;
+  border-color: rgba(0, 0, 0, 0.5647058824) transparent transparent transparent;
+  left: 59px;
+  top: 22px;
+}
+main .main_window .binds .item.empty .icon .diamond li:nth-child(5).animated {
+  -webkit-animation: opacity 1s 0.4s ease-in-out 1;
+          animation: opacity 1s 0.4s ease-in-out 1;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+}
+main .main_window .binds .item.empty .icon .diamond li:nth-child(6) {
+  border-width: 0 20px 20px 20px;
+  border-color: transparent transparent rgba(0, 0, 0, 0.5019607843);
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 23px;
+}
+main .main_window .binds .item.empty .icon .diamond li:nth-child(6).animated {
+  -webkit-animation: opacity 1s 0.4s ease-in-out 1;
+          animation: opacity 1s 0.4s ease-in-out 1;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+}
+main .main_window .binds .item.empty .icon .diamond li:nth-child(7) {
+  border-width: 20px 20px 0 20px;
+  border-color: rgba(0, 0, 0, 0.4392156863) transparent transparent transparent;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 44px;
+}
+main .main_window .binds .item.empty .icon .diamond li:nth-child(7).animated {
+  -webkit-animation: opacity 1s 0.6s ease-in-out 1;
+          animation: opacity 1s 0.6s ease-in-out 1;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+}
+@-webkit-keyframes opacity {
+  0% {
+    opacity: 1;
+  }
+  35% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes opacity {
+  0% {
+    opacity: 1;
+  }
+  35% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+main .main_window .binds .item.empty .icon svg {
+  width: 60%;
+  position: relative;
+  top: 4%;
+}
+main .main_window .binds .item.empty .icon svg path {
+  fill: #01A1FE;
+}
+main .main_window .binds .item.empty .title {
+  font-family: "Akrobat", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 48px;
+  color: #27273A;
+}
+main .main_window .binds .item.empty .subtitle {
+  color: #01A1FE;
+  font-family: "Akrobat", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 40px;
+}
+main .main_window .binds .item .left, main .main_window .binds .item .right {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+main .main_window .binds .item .left .toggle, main .main_window .binds .item .right .toggle {
+  cursor: pointer;
+  border-radius: 50px;
+  margin-right: 16px;
+  width: 32px;
+  height: 16px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: relative;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+  background-color: rgba(255, 255, 255, 0.062745098);
+  opacity: 0.5;
+}
+main .main_window .binds .item .left .toggle span, main .main_window .binds .item .right .toggle span {
+  position: absolute;
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #01A1FE;
+}
+main .main_window .binds .item .left .toggle.active, main .main_window .binds .item .right .toggle.active {
+  opacity: 1;
+}
+main .main_window .binds .item .left .toggle.active span, main .main_window .binds .item .right .toggle.active span {
+  background-color: #01A1FE;
+  -webkit-transform: translateX(100%);
+          transform: translateX(100%);
+}
+main .main_window .binds .item .left .num, main .main_window .binds .item .right .num {
+  font-size: 20px;
+  color: rgba(1, 161, 254, 0.5647058824);
+  width: 96px;
+  pointer-events: none;
+}
+main .main_window .binds .item .left .name, main .main_window .binds .item .right .name {
+  color: #fff;
+  font-size: 20px;
+}
+main .main_window .binds .item .left .hotkey, main .main_window .binds .item .right .hotkey {
+  height: 32px;
+  background-color: rgba(20, 20, 32, 0.5019607843);
+  padding: 0 16px;
+  border-radius: 4px;
+  margin-right: 8px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  color: #01A1FE;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+main .main_window .binds .item .left .hotkey:hover, main .main_window .binds .item .right .hotkey:hover {
+  background-color: #141420;
+}
+main .main_window .binds .item .left .hotkey.active, main .main_window .binds .item .right .hotkey.active {
+  background-color: rgba(20, 20, 32, 0.3137254902);
+}
+main .main_window .binds .item .left .buttons, main .main_window .binds .item .right .buttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 8px;
+}
+main .main_window .binds .item .left .buttons .button, main .main_window .binds .item .right .buttons .button {
+  cursor: pointer;
+  border-radius: 4px;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: rgba(20, 20, 32, 0.5019607843);
+}
+main .main_window .binds .item .left .buttons .button:hover, main .main_window .binds .item .right .buttons .button:hover {
+  background-color: #141420;
+}
+main .main_window .binds .item .left .buttons .button:active, main .main_window .binds .item .right .buttons .button:active {
+  background-color: rgba(20, 20, 32, 0.5019607843);
+}
+main .main_window .binds .item .left .buttons .button svg, main .main_window .binds .item .right .buttons .button svg {
+  width: 20px;
+}
+main .main_window .binds .item .left .buttons .button svg path, main .main_window .binds .item .right .buttons .button svg path {
+  fill: #01A1FE;
+}
+main .main_window .binds .item .left .buttons .button.red svg path, main .main_window .binds .item .right .buttons .button.red svg path {
+  fill: #ff2222;
+}
+main .main_window .binds .item .left .buttons .button.arrow svg, main .main_window .binds .item .right .buttons .button.arrow svg {
+  width: 14px;
+  height: 14px;
+}
+main .main_window .binds .item .left .buttons .button.arrow:nth-child(2), main .main_window .binds .item .right .buttons .button.arrow:nth-child(2) {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+main .main_window .add_bind {
+  width: 100%;
+  height: 56px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  opacity: 0.9;
+  border-top: 1px solid #222236;
+  padding: 0 32px;
+  padding-top: 16px;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+main .main_window .add_bind button {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  border-radius: 4px;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #01A1FE;
+  background-color: inherit;
+  color: #01A1FE;
+  text-transform: uppercase;
+  font-size: 16px;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+main .main_window .add_bind button:hover {
+  color: #fff;
+  background-color: #01A1FE;
+}
+main .main_window .add_bind button:active {
+  color: #fff;
+  background-color: #0179BF;
+  border-color: #0179BF;
+}
+main .edit_window {
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  position: absolute;
+  left: 0;
+  top: 0px;
+}
+main .edit_window .bind_settings {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+  gap: 16px;
+  padding: 24px 32px;
+}
+main .edit_window .bind_settings .name {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  border-radius: 4px;
+  height: 64px;
+  color: #fff;
+  padding: 0 16px;
+  font-size: 24px;
+  border: 1px solid #27273A;
+  background-color: rgba(39, 39, 58, 0.3764705882);
+}
+main .edit_window .bind_settings .hotkey {
+  cursor: pointer;
+  color: #fff;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  border-radius: 4px;
+  min-width: 160px;
+  padding: 0 16px;
+  font-size: 24px;
+  height: 64px;
+  border: 1px solid #27273A;
+  background-color: #27273A;
+}
+main .edit_window .bind_settings .hotkey.active {
+  opacity: 0.8;
+  background-color: rgba(39, 39, 58, 0.3764705882);
+}
+main .edit_window .bind_messages {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  overflow: auto;
+  gap: 16px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  opacity: 0.9;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+main .edit_window .bind_messages .bind_message {
+  width: 100%;
+  padding: 0 32px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 16px;
+}
+main .edit_window .bind_messages .bind_message .name {
+  padding: 0 16px;
+  height: 40px;
+  font-size: 16px;
+  color: #fff;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  border-radius: 4px;
+  border: 1px solid #27273A;
+  background-color: rgba(39, 39, 58, 0.3764705882);
+}
+main .edit_window .bind_messages .bind_message .wait {
+  padding: 0 16px;
+  height: 40px;
+  color: #fff;
+  width: 160px;
+  border-radius: 4px;
+  border: 1px solid #27273A;
+  text-align: center;
+  font-size: 16px;
+  background-color: rgba(39, 39, 58, 0.3764705882);
+}
+main .edit_window .bind_messages .bind_message .delete {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  background-color: rgba(255, 34, 34, 0.5647058824);
+}
+main .edit_window .bind_messages .bind_message .delete:hover {
+  opacity: 0.95;
+}
+main .edit_window .bind_messages .bind_message .delete:active {
+  opacity: 0.8;
+}
+main .edit_window .bind_messages .bind_message .delete svg {
+  width: 24px;
+}
+main .edit_window .bind_messages .bind_message .delete svg path {
+  fill: #fff;
+}
+main .edit_window .bind_messages .bind_add_message_wrapper {
+  width: 100%;
+  display: block;
+  padding: 0 32px;
+}
+main .edit_window .bind_messages .bind_add_message_wrapper .bind_add_message {
+  cursor: pointer;
+  border-radius: 4px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 100%;
+  height: 40px;
+  border: 1px dashed #27273A;
+  color: #27273A;
+  text-align: center;
+  font-size: 16px;
+}
+main .edit_window .bind_messages .bind_add_message_wrapper .bind_add_message svg {
+  width: 24px;
+  height: 24px;
+}
+main .edit_window .bind_messages .bind_add_message_wrapper .bind_add_message svg line {
+  fill: #27273A;
+  stroke: #27273A;
+}
+main .edit_window .bind_messages .bind_add_message_wrapper .bind_add_message:hover {
+  border-color: #fff;
+}
+main .edit_window .bind_messages .bind_add_message_wrapper .bind_add_message:hover svg line {
+  stroke: #fff;
+}
+main .edit_window .bind_buttons {
+  opacity: 0.9;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  padding: 0 32px;
+  gap: 16px;
+  padding-top: 16px;
+}
+main .edit_window .bind_buttons button {
+  border-radius: 4px;
+  width: 50%;
+  height: 64px;
+  text-transform: uppercase;
+  color: #fff;
+  font-size: 24px;
+}
+main .edit_window .bind_buttons button.save {
+  background-color: #0186D4;
+}
+main .edit_window .bind_buttons button.save:active {
+  background-color: #016BA9;
+}
+main .edit_window .bind_buttons button.cancel {
+  background-color: #27273A;
+}
+main .edit_window .bind_buttons button.cancel:active {
+  opacity: 0.8;
+}
+main .settings_window {
+  width: 100%;
+  height: 100%;
+  padding: 32px;
+  padding-top: 0px;
+  padding-bottom: 0;
+  opacity: 0.9;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  overflow: auto;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+main .settings_window:not(.active) {
+  opacity: 0;
+  pointer-events: none;
+}
+main .settings_window .title {
+  text-transform: uppercase;
+  font-size: 80px;
+  color: #01A1FE;
+  font-family: "Akrobat", sans-serif;
+  font-weight: 700;
+}
+main .settings_window .subtitle {
+  text-transform: uppercase;
+  font-size: 40px;
+  color: #fff;
+  font-family: "Akrobat", sans-serif;
+  font-weight: 700;
+}
+main .settings_window .subtitle a {
+  font-family: "Akrobat", sans-serif;
+  background: -webkit-gradient(linear, left top, right top, from(#01A1FE), color-stop(100%, #f1094b), to(#0095dd));
+  background: linear-gradient(90deg, #01A1FE 0%, #f1094b 100%, #0095dd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+main .settings_window .version {
+  display: none;
+  font-size: 24px;
+  margin-top: 32px;
+  font-family: "Akrobat", sans-serif;
+  color: #0191E5;
+}
+main .settings_window .separator {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: #27273A;
+  margin: 16px 0;
+}
+main .settings_window .params_wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  overflow: auto;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 32px;
+}
+main .settings_window .params_wrapper .params {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 16px;
+}
+main .settings_window .params_wrapper .params .param {
+  background-color: #27273A;
+  width: 100%;
+  border-radius: 4px;
+  padding: 24px 16px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: relative;
+}
+main .settings_window .params_wrapper .params .param .text {
+  font-size: 18px;
+}
+main .settings_window .params_wrapper .params .param .toggle {
+  cursor: pointer;
+  position: absolute;
+  right: 16px;
+  width: 52px;
+  height: 28px;
+  border-radius: 50px;
+  background-color: rgba(0, 0, 0, 0.3764705882);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+main .settings_window .params_wrapper .params .param .toggle span {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: rgba(1, 161, 254, 0.3137254902);
+  -webkit-transform: translateX(4px);
+          transform: translateX(4px);
+}
+main .settings_window .params_wrapper .params .param .toggle.active {
+  background-color: rgba(1, 107, 169, 0.3764705882);
+}
+main .settings_window .params_wrapper .params .param .toggle.active span {
+  -webkit-transform: translateX(calc(100% + 4px));
+          transform: translateX(calc(100% + 4px));
+  background-color: #01A1FE;
+}
+main .settings_window .params_wrapper .params .param .hotkey {
+  cursor: pointer;
+  position: absolute;
+  right: 16px;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 8px 16px;
+  background-color: rgba(0, 0, 0, 0.3137254902);
+  min-width: 120px;
+  text-align: center;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+main .settings_window .params_wrapper .params .param .hotkey.active {
+  color: rgba(255, 255, 255, 0.3137254902);
+}
+main .settings_window .params_wrapper .params .param .hotkey input {
+  width: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+main .settings_window .params_wrapper .params .param .input {
+  width: 120px;
+  text-align: center;
+  position: absolute;
+  right: 16px;
+  border-radius: 4px;
+  padding: 8px 8px;
+  background-color: rgba(0, 0, 0, 0.3137254902);
+}
+main .settings_window .params_wrapper .params .param select {
+  cursor: pointer;
+}
+main .settings_window .params_wrapper .params .param select option {
+  background-color: rgba(0, 0, 0, 0.3137254902);
+}

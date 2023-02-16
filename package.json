@@ -1,0 +1,6 @@
+{
+  "name": "electron",
+  "main": "resource/electron.js",
+  "devDependencies": {
+  }
+}

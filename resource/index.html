@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+	<head>
+		<title>Brilliant Binder</title>
+
+		<meta charset="UTF-8">
+		
+		<link rel="shortcut icon" href="img/logo.ico" type="image/x-icon">
+
+		<link rel="stylesheet" href="css/style.css">
+		
+		<script type="text/javascript" src="/eel.js"></script>
+		<script src="lib/vue.global.prod.js"></script>
+
+		<link href="lib/fonts_1.css" rel="stylesheet">
+		<link href="lib/fonts_2.css" rel="stylesheet">
+	</head>
+
+	<body v-cloak>
+		<div id="popup" :class="{'active': popup.length > 0}">
+			<c-window
+				title="Выбор профиля"
+				name="set_profile"
+				:profile_list="true"
+				:buttons="['Закрыть']"
+			></c-window>
+
+			<c-window
+				title="Экспорт профиля"
+				text='Сохранено в папке "profiles" в текущей директории.'
+				name="export_finish"
+				:buttons="['Закрыть']"
+			></c-window>
+
+			<c-window
+				title="Доступно обновление"
+				text="Чтобы получить обновление, вы можете заглянуть в наш Telegram канал: t.me/brilliant_binder"
+				name="update"
+				:buttons="['Получить', 'Закрыть']"
+			></c-window>
+
+			<c-window
+				title="Удаление профиля"
+				text="Вы точно хотите удалить текущий профиль?"
+				name="delete_profile"
+				:buttons="['Да', 'Нет']"
+			></c-window>
+
+			<c-window
+				title="Удаление бинда"
+				text="Вы точно хотите удалить этот бинд?"
+				name="delete_bind"
+				:buttons="['Да', 'Нет']"
+			></c-window>
+
+			<c-window
+				title="Удаление сообщения"
+				text="Вы точно хотите удалить это сообщение?"
+				name="delete_message"
+				:buttons="['Да', 'Нет']"
+			></c-window>
+
+			<c-window
+				title="Создать профиль"
+				name="create_profile"
+				:inputs="[{'name': 'name', 'placeholder': 'Введите название', 'maxlength': 20}]"
+				:buttons="['Создать', 'Отмена']"
+			></c-window>
+
+			<c-window
+				title="Создать бинд"
+				name="create_bind"
+				:inputs="[{'name': 'name', 'placeholder': 'Введите название', 'maxlength': 32}]"
+				:buttons="['Создать', 'Отмена']"
+			></c-window>
+		</div>
+
+		<header>
+			<div class="button" @click="minimizeWindow"><span class="line"></span></div>
+			<div class="button" @click="hideWindow">
+				<?xml version="1.0" ?><svg id="blue_copy" style="enable-background:new 0 0 100 100;" version="1.1" viewBox="0 0 100 100" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Layer_4_copy"><path d="M31.356,25.677l38.625,22.3c1.557,0.899,1.557,3.147,0,4.046l-38.625,22.3c-1.557,0.899-3.504-0.225-3.504-2.023V27.7   C27.852,25.902,29.798,24.778,31.356,25.677z"/><path d="M69.981,47.977l-38.625-22.3c-0.233-0.134-0.474-0.21-0.716-0.259l37.341,21.559c1.557,0.899,1.557,3.147,0,4.046   l-38.625,22.3c-0.349,0.201-0.716,0.288-1.078,0.301c0.656,0.938,1.961,1.343,3.078,0.699l38.625-22.3   C71.538,51.124,71.538,48.876,69.981,47.977z"/><path d="M31.356,25.677l38.625,22.3c1.557,0.899,1.557,3.147,0,4.046   l-38.625,22.3c-1.557,0.899-3.504-0.225-3.504-2.023V27.7C27.852,25.902,29.798,24.778,31.356,25.677z" style="fill:none;stroke:#000000;stroke-miterlimit:10;"/></g></svg>
+			</div>	
+			<div class="button" @click="closeWindow">
+				<svg width="16px" height="16px" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					<path fill-rule="evenodd" d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+				</svg>
+			</div>
+		</header>
+
+		<main :style="computedImage" :class="'blackout' + settings.blackout">
+			<div class="loading" :class="{'active': loading != 0}">
+				<span class="loader" :class="{'active': loading == 1}"></span>
+			</div>
+
+			<div class="navigation" v-if="edit == -1">
+				<div @click="window = 'main'" :class="{'nav': true, 'active': window == 'main'}">Биндер</div>
+				<div @click="window = 'settings'" :class="{'nav': true, 'active': window == 'settings'}">Настройки</div>
+			</div>
+
+			<div class="window_wrapper">
+				<div class="main_window" :class="{'active':window == 'main' && edit == -1}" v-show="edit == -1">
+					<div class="binds_settings">
+						<div class="left">
+							<input v-model="search" placeholder="Поиск по названию" type="text" class="search">
+						</div>
+
+						<div class="right">
+							<button class="square_button" @click="popup = 'create_profile'">
+								<svg id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><style type="text/css">	.st0{fill:#231F20;}</style><path class="st0" d="M381,236H276V131c0-11-9-20-20-20s-20,9-20,20v105H131c-11,0-20,9-20,20s9,20,20,20h105v105c0,11,9,20,20,20  s20-9,20-20V276h105c11,0,20-9,20-20S392,236,381,236z"/></svg>
+							</button>
+
+							<div class="profile" @click="popup = 'set_profile'">
+								{[ profiles[profile]['name'] ]}
+
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>arrow-down (2)</title><g id="Layer_2" data-name="Layer 2"><g id="arrow-downward"><g id="arrow-downward-2" data-name="arrow-downward"><rect class="cls-1" width="24" height="24" transform="translate(0 24) rotate(-90)"/><path class="cls-2" d="M12,17a1.72,1.72,0,0,1-1.33-.64l-4.21-5.1A2.1,2.1,0,0,1,6.2,9.05,1.76,1.76,0,0,1,7.79,8h8.42A1.76,1.76,0,0,1,17.8,9.05a2.1,2.1,0,0,1-.26,2.21l-4.21,5.1A1.72,1.72,0,0,1,12,17Z"/></g></g></g></svg>
+							</div>
+
+							<input @change="importProfile" type="file" accept="application/json" ref="import" hidden>
+
+							<button @click="$refs.import.click()" class="square_button big_svg">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+									<path fill-rule="evenodd" d="M17,9 L17,7 L18,7 C19.6568542,7 21,8.34314575 21,10 L21,18 C21,19.6568542 19.6568542,21 18,21 L6,21 C4.34314575,21 3,19.6568542 3,18 L3,10 C3,8.34314575 4.34314575,7 6,7 L7,7 L7,9 L6,9 C5.44771525,9 5,9.44771525 5,10 L5,18 C5,18.5522847 5.44771525,19 6,19 L18,19 C18.5522847,19 19,18.5522847 19,18 L19,10 C19,9.44771525 18.5522847,9 18,9 L17,9 Z M13.0448155,11.0472731 L14.2163884,9.88954613 C14.6244142,9.48634246 15.2859548,9.48634246 15.6939806,9.88954613 C16.1020065,10.2927498 16.1020065,10.9464721 15.6939806,11.3496758 L12,15 L8.30601937,11.3496758 C7.89799354,10.9464721 7.89799354,10.2927498 8.30601937,9.88954613 C8.71404521,9.48634246 9.37558579,9.48634246 9.78361162,9.88954613 L10.9551845,11.0472731 L10.9551845,3.0324676 C10.9551845,2.46225149 11.4229643,2 12,2 C12.5770357,2 13.0448155,2.46225149 13.0448155,3.0324676 L13.0448155,11.0472731 Z"/>
+								</svg>
+							</button>
+
+							<button @click="exportProfile" class="square_button big_svg">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+									<path fill-rule="evenodd" d="M17,10 L17,8 L18,8 C19.6568542,8 21,9.34314575 21,11 L21,19 C21,20.6568542 19.6568542,22 18,22 L6,22 C4.34314575,22 3,20.6568542 3,19 L3,11 C3,9.34314575 4.34314575,8 6,8 L7,8 L7,10 L6,10 C5.44771525,10 5,10.4477153 5,11 L5,19 C5,19.5522847 5.44771525,20 6,20 L18,20 C18.5522847,20 19,19.5522847 19,19 L19,11 C19,10.4477153 18.5522847,10 18,10 L17,10 Z M10.9551845,5.95272695 L9.78361162,7.11045387 C9.37558579,7.51365754 8.71404521,7.51365754 8.30601937,7.11045387 C7.89799354,6.70725019 7.89799354,6.05352787 8.30601937,5.65032419 L12,2 L15.6939806,5.65032419 C16.1020065,6.05352787 16.1020065,6.70725019 15.6939806,7.11045387 C15.2859548,7.51365754 14.6244142,7.51365754 14.2163884,7.11045387 L13.0448155,5.95272695 L13.0448155,13.9675324 C13.0448155,14.5377485 12.5770357,15 12,15 C11.4229643,15 10.9551845,14.5377485 10.9551845,13.9675324 L10.9551845,5.95272695 Z"/>
+								</svg>
+							</button>
+						</div>
+					</div>
+
+					<div class="binds">
+						<template v-for="item, key in profiles[profile].binds">
+							<div :key="key" class="item" v-show="item.name.toLowerCase().indexOf(search.toLowerCase()) !== -1" :class="{'no_active': !item.status}">
+								<div class="left">
+									<div class="toggle" :class="{'active': item.status}" @click="bindToggleStatus(key)">
+										<span></span>
+									</div>
+
+									<div class="num">
+										№{[ key + 1 ]}
+									</div>
+
+									<div class="name">
+										{[ item.name ]}
+									</div>
+								</div>
+
+								<div class="right">
+									<c-hotkey ref="binds_bind_hotkey" :bind="key" @change-hotkey="bindChangeHotkey" name="hotkey"></c-hotkey>
+
+									<div class="buttons">
+										<div class="button arrow" @click="bindArrow(key, 'down')">
+											<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+												width="307.053px" height="307.053px" viewBox="0 0 307.053 307.053" style="enable-background:new 0 0 307.053 307.053;"
+												xml:space="preserve">
+												<g>
+													<g id="_x34_86._Down">
+														<g>
+															<path d="M302.445,80.796l-11.101-11.103c-6.123-6.131-16.074-6.131-22.209,0L153.67,183.707L37.907,67.959
+																c-6.134-6.13-16.08-6.13-22.209,0L4.597,79.06c-6.129,6.133-6.129,16.067,0,22.201l137.83,137.829
+																c6.129,6.136,16.067,6.136,22.203,0l137.815-136.096C308.589,96.864,308.589,86.926,302.445,80.796z"/>
+														</g>
+													</g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g>
+											</svg>
+										</div>
+
+										<div class="button arrow" @click="bindArrow(key, 'up')">
+											<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+												width="307.053px" height="307.053px" viewBox="0 0 307.053 307.053" style="enable-background:new 0 0 307.053 307.053;"
+												xml:space="preserve">
+												<g>
+													<g id="_x34_86._Down">
+														<g>
+															<path d="M302.445,80.796l-11.101-11.103c-6.123-6.131-16.074-6.131-22.209,0L153.67,183.707L37.907,67.959
+																c-6.134-6.13-16.08-6.13-22.209,0L4.597,79.06c-6.129,6.133-6.129,16.067,0,22.201l137.83,137.829
+																c6.129,6.136,16.067,6.136,22.203,0l137.815-136.096C308.589,96.864,308.589,86.926,302.445,80.796z"/>
+														</g>
+													</g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g>
+											</svg>
+										</div>
+
+										<div class="button" @click="bindEdit(key)">
+											<svg data-name="Livello 1" id="Livello_1" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><title/><path d="M64,39A25,25,0,1,0,89,64,25,25,0,0,0,64,39Zm0,44A19,19,0,1,1,83,64,19,19,0,0,1,64,83Z"/><path d="M121,48h-8.93a1,1,0,0,1-.94-.68,49.9,49.9,0,0,0-2-4.85,1,1,0,0,1,.18-1.15L115.62,35a7,7,0,0,0,0-9.9L102.89,12.38a7,7,0,0,0-9.9,0l-6.31,6.31a1,1,0,0,1-1.15.18,49.76,49.76,0,0,0-4.85-2,1,1,0,0,1-.68-.94V7a7,7,0,0,0-7-7H55a7,7,0,0,0-7,7v8.93a1,1,0,0,1-.68.94,49.9,49.9,0,0,0-4.85,2,1,1,0,0,1-1.15-.18L35,12.38a7,7,0,0,0-9.9,0L12.38,25.11a7,7,0,0,0,0,9.9l6.31,6.31a1,1,0,0,1,.18,1.15,49.76,49.76,0,0,0-2,4.85,1,1,0,0,1-.94.68H7a7,7,0,0,0-7,7V73a7,7,0,0,0,7,7h8.93a1,1,0,0,1,.94.68,49.9,49.9,0,0,0,2,4.85,1,1,0,0,1-.18,1.15L12.38,93a7,7,0,0,0,0,9.9l12.73,12.73a7,7,0,0,0,9.9,0l6.31-6.31a1,1,0,0,1,1.15-.18,49.76,49.76,0,0,0,4.85,2,1,1,0,0,1,.68.94V121a7,7,0,0,0,7,7H73a7,7,0,0,0,7-7v-8.93a1,1,0,0,1,.68-.94,49.9,49.9,0,0,0,4.85-2,1,1,0,0,1,1.15.18L93,115.62a7,7,0,0,0,9.9,0l12.73-12.73a7,7,0,0,0,0-9.9l-6.31-6.31a1,1,0,0,1-.18-1.15,49.76,49.76,0,0,0,2-4.85,1,1,0,0,1,.94-.68H121a7,7,0,0,0,7-7V55A7,7,0,0,0,121,48Zm1,25a1,1,0,0,1-1,1h-8.93a7,7,0,0,0-6.6,4.69,43.9,43.9,0,0,1-1.76,4.26,7,7,0,0,0,1.35,8l6.31,6.31a1,1,0,0,1,0,1.41L98.65,111.38a1,1,0,0,1-1.41,0l-6.31-6.31a7,7,0,0,0-8-1.35,43.88,43.88,0,0,1-4.27,1.76,7,7,0,0,0-4.68,6.6V121a1,1,0,0,1-1,1H55a1,1,0,0,1-1-1v-8.93a7,7,0,0,0-4.69-6.6,43.9,43.9,0,0,1-4.26-1.76,7,7,0,0,0-8,1.35l-6.31,6.31a1,1,0,0,1-1.41,0L16.62,98.65a1,1,0,0,1,0-1.41l6.31-6.31a7,7,0,0,0,1.35-8,43.88,43.88,0,0,1-1.76-4.27A7,7,0,0,0,15.93,74H7a1,1,0,0,1-1-1V55a1,1,0,0,1,1-1h8.93a7,7,0,0,0,6.6-4.69,43.9,43.9,0,0,1,1.76-4.26,7,7,0,0,0-1.35-8l-6.31-6.31a1,1,0,0,1,0-1.41L29.35,16.62a1,1,0,0,1,1.41,0l6.31,6.31a7,7,0,0,0,8,1.35,43.88,43.88,0,0,1,4.27-1.76A7,7,0,0,0,54,15.93V7a1,1,0,0,1,1-1H73a1,1,0,0,1,1,1v8.93a7,7,0,0,0,4.69,6.6,43.9,43.9,0,0,1,4.26,1.76,7,7,0,0,0,8-1.35l6.31-6.31a1,1,0,0,1,1.41,0l12.73,12.73a1,1,0,0,1,0,1.41l-6.31,6.31a7,7,0,0,0-1.35,8,43.88,43.88,0,0,1,1.76,4.27,7,7,0,0,0,6.6,4.68H121a1,1,0,0,1,1,1Z"/></svg>
+										</div>
+
+										<div v-if="settings.toggle['delete_bind']" class="button red" @click="openPopup('delete_bind', key)">					
+											<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+											viewBox="0 0 791.908 791.908" style="enable-background:new 0 0 791.908 791.908;" xml:space="preserve">
+											<g>
+												<path d="M648.587,99.881H509.156C500.276,43.486,452.761,0,394.444,0S287.696,43.486,279.731,99.881H142.315
+												c-26.733,0-48.43,21.789-48.43,48.43v49.437c0,24.719,17.761,44.493,41.564,47.423V727.64c0,35.613,28.655,64.268,64.268,64.268
+												h392.475c35.613,0,64.268-28.655,64.268-64.268V246.087c23.711-3.937,41.564-23.711,41.564-47.423v-49.437
+												C697.017,121.67,675.228,99.881,648.587,99.881z M394.444,36.62c38.543,0,70.219,26.733,77.085,63.261H316.351
+												C324.225,64.268,355.901,36.62,394.444,36.62z M618.924,728.739c0,14.831-11.901,27.648-27.648,27.648H198.71
+												c-14.831,0-27.648-11.901-27.648-27.648V247.185h446.948v481.554H618.924z M660.397,197.748c0,6.958-4.944,11.902-11.902,11.902
+												H142.223c-6.958,0-11.902-4.944-11.902-11.902v-49.437c0-6.958,4.944-11.902,11.902-11.902h505.265
+												c6.958,0,11.901,4.944,11.901,11.902v49.437H660.397z M253.09,661.45V349.081c0-9.887,7.873-17.761,17.761-17.761
+												s17.761,7.873,17.761,17.761V661.45c0,9.887-7.873,17.761-17.761,17.761C260.964,680.309,253.09,671.337,253.09,661.45z
+												M378.606,661.45V349.081c0-9.887,7.873-17.761,17.761-17.761c9.887,0,17.761,7.873,17.761,17.761V661.45
+												c0,9.887-7.873,17.761-17.761,17.761C386.57,680.309,378.606,671.337,378.606,661.45z M504.212,661.45V349.081
+												c0-9.887,7.873-17.761,17.761-17.761s17.761,7.873,17.761,17.761V661.45c0,9.887-7.873,17.761-17.761,17.761
+												C513.093,680.309,504.212,671.337,504.212,661.45z"/></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g>
+											</svg>
+										</div>
+
+										<div v-else class="button red" @click="bindDelete(key)">					
+											<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+											viewBox="0 0 791.908 791.908" style="enable-background:new 0 0 791.908 791.908;" xml:space="preserve">
+											<g>
+												<path d="M648.587,99.881H509.156C500.276,43.486,452.761,0,394.444,0S287.696,43.486,279.731,99.881H142.315
+												c-26.733,0-48.43,21.789-48.43,48.43v49.437c0,24.719,17.761,44.493,41.564,47.423V727.64c0,35.613,28.655,64.268,64.268,64.268
+												h392.475c35.613,0,64.268-28.655,64.268-64.268V246.087c23.711-3.937,41.564-23.711,41.564-47.423v-49.437
+												C697.017,121.67,675.228,99.881,648.587,99.881z M394.444,36.62c38.543,0,70.219,26.733,77.085,63.261H316.351
+												C324.225,64.268,355.901,36.62,394.444,36.62z M618.924,728.739c0,14.831-11.901,27.648-27.648,27.648H198.71
+												c-14.831,0-27.648-11.901-27.648-27.648V247.185h446.948v481.554H618.924z M660.397,197.748c0,6.958-4.944,11.902-11.902,11.902
+												H142.223c-6.958,0-11.902-4.944-11.902-11.902v-49.437c0-6.958,4.944-11.902,11.902-11.902h505.265
+												c6.958,0,11.901,4.944,11.901,11.902v49.437H660.397z M253.09,661.45V349.081c0-9.887,7.873-17.761,17.761-17.761
+												s17.761,7.873,17.761,17.761V661.45c0,9.887-7.873,17.761-17.761,17.761C260.964,680.309,253.09,671.337,253.09,661.45z
+												M378.606,661.45V349.081c0-9.887,7.873-17.761,17.761-17.761c9.887,0,17.761,7.873,17.761,17.761V661.45
+												c0,9.887-7.873,17.761-17.761,17.761C386.57,680.309,378.606,671.337,378.606,661.45z M504.212,661.45V349.081
+												c0-9.887,7.873-17.761,17.761-17.761s17.761,7.873,17.761,17.761V661.45c0,9.887-7.873,17.761-17.761,17.761
+												C513.093,680.309,504.212,671.337,504.212,661.45z"/></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g>
+											</svg>
+										</div>
+									</div>
+								</div>
+							</div>
+						</template>
+
+						<div class="item empty" v-show="profiles[profile].binds.length == 0">
+							<!-- <div class="icon">
+								<svg width="96" xmlns="http://www.w3.org/2000/svg" height="96" viewBox="0 0 96 96" xmlns:xlink="http://www.w3.org/1999/xlink">
+									<path d="m6.309,36.156l40.194,49.887-16.119-49.887h-24.075zm28.443-0l14.235,49.989 12.249-49.989h-26.484zm16.401,49.887l38.694-49.887h-23.889l-14.805,49.887zm38.784-53.151l-11.601-19.836-11.607,19.836h23.208zm-15.249-20.973h-23.208l11.601,20.517 11.607-20.517zm-15.174,20.973l-11.601-19.836-11.604,19.836h23.205zm-14.997-20.973h-23.205l11.604,20.517 11.601-20.517zm-26.85,1.137l-11.601,19.836h23.205l-11.604-19.836z"/>
+								</svg>
+							</div> -->
+
+							<div class="diamondCon icon">
+								<ul class="diamond" v-for="i in [0]">
+									<li ref="diamond_item"></li>
+									<li ref="diamond_item"></li>
+									<li ref="diamond_item"></li>
+									<li ref="diamond_item"></li>
+									<li ref="diamond_item"></li>
+									<li ref="diamond_item"></li>
+									<li ref="diamond_item"></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+					<div class="add_bind">
+						<button @click.prevent="openPopup('create_bind')">Добавить горячую клавишу</button>
+					</div>
+				</div>
+
+				<div class="settings_window" :class="{'active':window == 'settings' && edit == -1}">
+					<div class="title">
+						Brilliant Binder
+					</div>
+
+					<div class="subtitle">
+						by <a target="_blank" href="https://mirondiamond.com">Miron Diamond</a>
+					</div>
+
+					<span class="separator"></span>
+
+					<div class="params_wrapper">
+						<div class="params" v-for="i in [0]">
+							<div class="param">
+								<div class="text">
+									Клавиша открытия чата на сервере
+								</div>
+
+								<c-hotkey ref="settings_hotkey" :default="settings.binds['open_chat']" @change-hotkey-name="settingsHotkey" name="open_chat"></c-hotkey>
+							</div>
+						</div>
+
+						<div class="params">
+							<div class="param">
+								<div class="text">
+									Задержка после нажатия горячей клавиши
+								</div>
+
+								<input v-model="settings.wait.after_hotkey" type="number" min="0" class="input">
+							</div>
+
+							<div class="param">
+								<div class="text">
+									Задержка после открытия чата
+								</div>
+
+								<input v-model="settings.wait.after_open_chat" type="number" min="0" class="input">
+							</div>
+
+							<div class="param">
+								<div class="text">
+									Стандартная задержка при создании сообщения в настройках бинда
+								</div>
+
+								<input v-model="settings.wait.create_bind_message" type="number" min="0" class="input">
+							</div>
+						</div>
+
+						<div class="params">
+							<div class="param">
+								<div class="text">
+									Задний фон
+								</div>
+
+								<select v-model="settings.image" class="input">
+									<option :selected="key == settings.image" v-for="item, key in settings.images" :value="key">{[ item ]}</option>
+								</select>
+							</div>
+
+							<div class="param">
+								<div class="text">
+									Затемнение фона
+								</div>
+
+								<select v-model="settings.blackout" class="input">
+									<option :selected="(i - 1) == settings.blackout" v-for="i in 5" :value="i - 1">{[ (i - 1) * 25 ]}%</option>
+								</select>
+							</div>
+
+							<div class="param">
+								<div class="text">
+									Режим ввода текста
+								</div>
+
+								<select v-model="settings.input_mode" class="input">
+									<option :value="key" :selected="key == settings.input_mode" v-for="item, key in settings.input_mods">{[ item ]}</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="params" v-for="i in [0]">
+							<div class="param">
+								<div class="text">
+									Запускать работу биндов при каждом запуске (в трее)
+								</div>
+
+								<c-toggle ref="settings_toggle" name="start_hide" :active="settings.toggle['start_hide']" @change-value="settingsToggle"></c-toggle>
+							</div>
+							
+							<div class="param">
+								<div class="text">
+									Предупреждение при удалении профиля
+								</div>
+
+								<c-toggle ref="settings_toggle" name="delete_profile" :active="settings.toggle['delete_profile']" @change-value="settingsToggle"></c-toggle>
+							</div>
+
+							<div class="param">
+								<div class="text">
+									Предупреждение при удалении бинда
+								</div>
+
+								<c-toggle ref="settings_toggle" name="delete_bind" :active="settings.toggle['delete_bind']" @change-value="settingsToggle"></c-toggle>
+							</div>
+
+							<div class="param">
+								<div class="text">
+									Предупреждение при удалении сообщения
+								</div>
+
+								<c-toggle ref="settings_toggle" name="delete_message" :active="settings.toggle['delete_message']" @change-value="settingsToggle"></c-toggle>
+							</div>
+
+							<div class="param">
+								<div class="text">
+									Удаление тега команды при вводе текста (Arizona RP)
+								</div>
+
+								<c-toggle ref="settings_toggle" name="arizona_delete_tag" :active="settings.toggle['arizona_delete_tag']" @change-value="settingsToggle"></c-toggle>
+							</div>
+
+							<div class="param">
+								<div class="text">
+									Windows уведомления при активации/деактивации биндера
+								</div>
+
+								<c-toggle ref="settings_toggle" name="windows_notf" :active="settings.toggle['windows_notf']" @change-value="settingsToggle"></c-toggle>
+							</div>
+
+							<div class="param">
+								<div class="text">
+									Уведомлять о новых обновлениях
+								</div>
+
+								<c-toggle ref="settings_toggle" name="update" :active="settings.toggle['update']" @change-value="settingsToggle"></c-toggle>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<form @submit.prevent="bindSave" class="edit_window" v-if="edit != -1">
+					<div class="bind_settings">
+						<input :value="profiles[profile].binds[edit].name" placeholder="Название бинда" name="name" type="text" class="name">
+						
+						<c-hotkey name="hotkey" :bind="edit"></c-hotkey>
+					</div>
+
+					<div class="bind_messages">	
+						<div class="bind_message" v-for="item, key in edit_messages">
+							<input v-model="item.text" placeholder="Текст" type="text" class="name">
+							<input v-model="item.wait" placeholder="Задержка (мс)" type="text" class="wait">
+
+							<button v-if="settings.toggle['delete_message']" class="delete" @click.prevent="openPopup('delete_message', {'id': key})">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.707,8.707,13.414,12l3.293,3.293a1,1,0,1,1-1.414,1.414L12,13.414,8.707,16.707a1,1,0,1,1-1.414-1.414L10.586,12,7.293,8.707A1,1,0,1,1,8.707,7.293L12,10.586l3.293-3.293a1,1,0,1,1,1.414,1.414Z"/></svg>
+							</button>
+
+							<button v-else class="delete" @click.prevent="bindDeleteMessage(key)">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.707,8.707,13.414,12l3.293,3.293a1,1,0,1,1-1.414,1.414L12,13.414,8.707,16.707a1,1,0,1,1-1.414-1.414L10.586,12,7.293,8.707A1,1,0,1,1,8.707,7.293L12,10.586l3.293-3.293a1,1,0,1,1,1.414,1.414Z"/></svg>
+							</button>
+						</div>
+
+						<div class="bind_add_message_wrapper" @click="bindAddMessage">
+							<div class="bind_add_message">
+								<svg height="128px" id="Layer_1" style="enable-background:new 0 0 128 128;" version="1.1" viewBox="0 0 128 128" width="128px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><line style="stroke-width:12;stroke-miterlimit:10;" x1="13.787" x2="114.213" y1="64.001" y2="64.001"/><line style="stroke-width:12;stroke-miterlimit:10;" x1="64" x2="64" y1="13.787" y2="114.213"/></g></svg>
+							</div>
+						</div>
+					</div>
+
+					<div class="bind_buttons">
+						<button type="submit" class="save">Сохранить</button>
+						<button class="cancel" @click.prevent="edit = -1">Отмена</button>
+					</div>
+				</form>
+			</div>
+		</main>
+
+		<script src="js/index.js"></script>
+	</body>
+</html>
